@@ -1,0 +1,3 @@
+data/hmdb51
+data/ucf101
+*.pth.tar

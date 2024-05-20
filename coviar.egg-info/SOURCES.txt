@@ -1,0 +1,6 @@
+LICENSE
+README.md
+coviar.egg-info/PKG-INFO
+coviar.egg-info/SOURCES.txt
+coviar.egg-info/dependency_links.txt
+coviar.egg-info/top_level.txt
