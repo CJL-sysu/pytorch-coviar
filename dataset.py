@@ -55,10 +55,10 @@ def get_gop_pos(frame_idx, representation):
 
 class CoviarDataSet(data.Dataset):
     def __init__(self, data_root, data_name,
-                 video_list,
+                 video_list, # 数据集标注文件，在/data/datalists
                  representation,
                  transform,
-                 num_segments,
+                 num_segments, # 默认25
                  is_train,
                  accumulate):
 
@@ -79,14 +79,14 @@ class CoviarDataSet(data.Dataset):
 
     def _load_list(self, video_list):
         self._video_list = []
-        with open(video_list, 'r') as f:
+        with open(video_list, 'r') as f: # 读取数据集标注文件
             for line in f:
                 video, _, label = line.strip().split()
-                video_path = os.path.join(self._data_root, video[:-4] + '.mp4')
+                video_path = os.path.join(self._data_root, video[:-4] + '.mp4')# 找到标签对应视频的真实路径
                 self._video_list.append((
                     video_path,
                     int(label),
-                    get_num_frames(video_path)))
+                    get_num_frames(video_path))) # counting the number of frames in a video
 
         print('%d videos loaded.' % len(self._video_list))
 
@@ -127,7 +127,7 @@ class CoviarDataSet(data.Dataset):
             video_path, label, num_frames = self._video_list[index]
 
         frames = []
-        for seg in range(self._num_segments):
+        for seg in range(self._num_segments): # num_segments为加载切片的数量
 
             if self._is_train:
                 gop_index, gop_pos = self._get_train_frame_index(num_frames, seg)
@@ -136,6 +136,7 @@ class CoviarDataSet(data.Dataset):
 
             img = load(video_path, gop_index, gop_pos,
                        representation_idx, self._accumulate)
+            # coviar 的 load 函数，后续实现中，load在本地树莓派完成，只需要将img换成从本地上传的 numpy 矩阵
 
             if img is None:
                 print('Error: loading video %s failed.' % video_path)
