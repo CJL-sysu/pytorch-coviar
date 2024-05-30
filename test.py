@@ -43,20 +43,20 @@ else:
 
 def main():
     net = Model(num_class, args.test_segments, args.representation,
-                base_model=args.arch)
+                base_model=args.arch)# 使用预训练模型resnet构建网络
 
-    checkpoint = torch.load(args.weights)
+    checkpoint = torch.load(args.weights) # 加载训练好的模型参数
     print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
 
     base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
-    net.load_state_dict(base_dict)
+    net.load_state_dict(base_dict) # 导入模型参数
 
     if args.test_crops == 1:
         cropping = torchvision.transforms.Compose([
             GroupScale(net.scale_size),
             GroupCenterCrop(net.crop_size),
         ])
-    elif args.test_crops == 10:
+    elif args.test_crops == 10: # 默认是10
         cropping = torchvision.transforms.Compose([
             GroupOverSample(net.crop_size, net.scale_size, is_mv=(args.representation == 'mv'))
         ])
@@ -68,7 +68,7 @@ def main():
             args.data_root,
             args.data_name,
             video_list=args.test_list,
-            num_segments=args.test_segments,
+            num_segments=args.test_segments, # 默认25
             representation=args.representation,
             transform=cropping,
             is_train=False,
