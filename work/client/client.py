@@ -4,6 +4,7 @@ from coviar import load
 import numpy as np
 import random
 import cv2
+import pickle
 
 def color_aug(img, random_h=36, random_l=50, random_s=50):
     ''' 
@@ -106,11 +107,17 @@ class CoviarData:
                 img = img[..., ::-1]
 
             frames.append(img)
-        frames = self._transform(frames)
-
-        frames = np.array(frames)
-        frames = np.transpose(frames, (0, 3, 1, 2))
+        
         return frames
+
+def save_list_to_bin_file(list_, file_path):
+    with open(file_path, 'wb') as f:
+        pickle.dump(list_, f)
+
+def load_list_from_bin_file(file_path):
+    with open(file_path, 'rb') as f:
+        list_ = pickle.load(f)
+    return list_
 
 def parse_args():
     # parse args
@@ -121,8 +128,9 @@ def parse_args():
     parser.add_argument('--test_segments', type=int, default=25)
     parser.add_argument('--no_accumulation', action='store_true',
                         help='disable accumulation of motion vectors and residuals.')
+    parser.add_argument('--store_file', type=str, default= "frams.bin")
 
-    args = parser.parse_argsgs()
+    args = parser.parse_args()
     return args
 
 
@@ -130,7 +138,8 @@ def main():
     args = parse_args()
     data = CoviarData(args.video_path, args.representation, args.test_segments, not args.no_accumulation)
     frames = data.get_mat()
-    print(frames.shape)
+    print(frames)
+    save_list_to_bin_file(frames, args.store_file)
     
 if __name__ == '__main__':
     main()

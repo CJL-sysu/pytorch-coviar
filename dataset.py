@@ -157,12 +157,13 @@ class CoviarDataSet(data.Dataset):
                 img = img[..., ::-1]
 
             frames.append(img)
+        
+        # 此处截断，为clinet和server分界
 
         frames = self._transform(frames)
 
         frames = np.array(frames)
         frames = np.transpose(frames, (0, 3, 1, 2))
-        # 此处截断，为clinet和server分界
         input = torch.from_numpy(frames).float() / 255.0
 
         if self._representation == 'iframe':
