@@ -128,7 +128,7 @@ def parse_args():
     parser.add_argument('--test_segments', type=int, default=25)
     parser.add_argument('--no_accumulation', action='store_true',
                         help='disable accumulation of motion vectors and residuals.')
-    parser.add_argument('--store_file', type=str, default= "frams.bin")
+    parser.add_argument('--store_file', type=str, default= "frames.bin")
 
     args = parser.parse_args()
     return args
@@ -138,7 +138,7 @@ def main():
     args = parse_args()
     data = CoviarData(args.video_path, args.representation, args.test_segments, not args.no_accumulation)
     frames = data.get_mat()
-    print(frames)
+    #print(frames)
     save_list_to_bin_file(frames, args.store_file)
     
 if __name__ == '__main__':
