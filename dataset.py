@@ -162,6 +162,7 @@ class CoviarDataSet(data.Dataset):
 
         frames = np.array(frames)
         frames = np.transpose(frames, (0, 3, 1, 2))
+        # 此处截断，为clinet和server分界
         input = torch.from_numpy(frames).float() / 255.0
 
         if self._representation == 'iframe':
