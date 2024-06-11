@@ -21,10 +21,27 @@ GOP_SIZE = 12
 
 
 def clip_and_scale(img, size):
+    """
+    这个函数对输入的图像进行裁剪和缩放。
+    img: 输入的图像数组。
+    size: 用于缩放的尺寸参数。
+    ---
+    img * (127.5 / size): 首先，将图像数组中的每个像素值乘以一个缩放因子。缩放因子是 127.5 / size，这是一个归一化过程。
+    .astype(np.int32): 将缩放后的图像数组转换为 np.int32 类型，这通常是为了确保像素值是整数。
+    """
     return (img * (127.5 / size)).astype(np.int32)
 
 
 def get_seg_range(n, num_segments, seg, representation):
+    """
+    这个函数计算视频段（segment）的起始和结束帧的索引。
+
+    参数
+    n: 总帧数。
+    num_segments: 需要划分的段数。
+    seg: 当前段的索引。
+    representation: 表示类型，可以是 'residual' 或 'mv' 等。
+    """
     if representation in ['residual', 'mv']:
         n -= 1
 
@@ -35,13 +52,16 @@ def get_seg_range(n, num_segments, seg, representation):
         seg_end = seg_begin + 1
 
     if representation in ['residual', 'mv']:
-        # Exclude the 0-th frame, because it's an I-frmae.
+        # Exclude the 0-th frame, because it's an I-frame.
         return seg_begin + 1, seg_end + 1
 
     return seg_begin, seg_end
 
 
 def get_gop_pos(frame_idx, representation):
+    """
+    用于计算给定帧在视频的GOP（Group of Pictures，图像组）中的位置。
+    """
     gop_index = frame_idx // GOP_SIZE
     gop_pos = frame_idx % GOP_SIZE
     if representation in ['residual', 'mv']:
@@ -54,13 +74,14 @@ def get_gop_pos(frame_idx, representation):
 
 
 class CoviarDataSet(data.Dataset):
-    def __init__(self, data_root, data_name,
+    def __init__(self, data_root, # 数据集路径
+                 data_name, # 数据集名称
                  video_list, # 数据集标注文件，在/data/datalists
-                 representation,
-                 transform,
+                 representation, # 表示类型，可以是 'frame', 'mv', 'residual' 
+                 transform, # 对视频操作
                  num_segments, # 默认25
-                 is_train,
-                 accumulate):
+                 is_train, # 是否训练
+                 accumulate): # 默认可累计
 
         self._data_root = data_root
         self._data_name = data_name

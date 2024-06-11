@@ -30,7 +30,7 @@ parser.add_argument('--test-crops', type=int, default=10)
 parser.add_argument('--input_size', type=int, default=224)
 parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
                     help='number of workers for data loader.')
-parser.add_argument('--gpus', nargs='+', type=int, default=None)
+parser.add_argument('--gpus', nargs='+', type=int, default=None) # 如果用户在命令行中输入 --gpus 0 1 2，那么这些参数会被解析成一个整数列表 [0, 1, 2]。
 
 args = parser.parse_args()
 
@@ -90,12 +90,13 @@ def main():
     total_num = len(data_loader.dataset)
     output = []
 
-    def forward_video(data):
-        input_var = torch.autograd.Variable(data, volatile=True)
-        scores = net(input_var)
+    def forward_video(data): # 这里的 data 是输入的视频数据。
+        input_var = torch.autograd.Variable(data, volatile=True) # 包装数据，使其具备自动求导的功能。volatile=True 表示在该变量上不会进行反向传播。需要注意的是，在较新的 PyTorch 版本中（0.4.0及以后），Variable 和 volatile 已被弃用，直接使用 data 就可以。
+        scores = net(input_var) # 通过神经网络生成分数
         scores = scores.view((-1, args.test_segments * args.test_crops) + scores.size()[1:])
-        scores = torch.mean(scores, dim=1)
-        return scores.data.cpu().numpy().copy()
+        scores = torch.mean(scores, dim=1) # 计算平均分数
+        return scores.data.cpu().numpy().copy() # 将结果转换为 NumPy 数组并返回
+        # scores.data 获取张量数据，.cpu() 将数据从GPU转移到CPU（如果数据在GPU上），.numpy() 将数据转换为NumPy数组，最后 .copy() 生成数据的副本并返回。
 
 
     proc_start_time = time.time()
@@ -103,8 +104,8 @@ def main():
 
     for i, (data, label) in data_gen:
         video_scores = forward_video(data)
-        output.append((video_scores, label[0]))
-        cnt_time = time.time() - proc_start_time
+        output.append((video_scores, label[0])) # 预测分类可用 np.argmax(video_scores)求得
+        cnt_time = time.time() - proc_start_time # 实际分类为label[0]
         if (i + 1) % 100 == 0:
             print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
                                                                             total_num,
