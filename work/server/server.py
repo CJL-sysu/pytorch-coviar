@@ -64,8 +64,10 @@ def main():
     args = parse_args()
     if args.data_name == 'ucf101':
         num_class = 101
+        classes = ['ApplyEyeMakeup', 'ApplyLipstick', 'Archery', 'BabyCrawling', 'BalanceBeam', 'BandMarching', 'BaseballPitch', 'Basketball', 'BasketballDunk', 'BenchPress', 'Biking', 'Billiards', 'BlowDryHair', 'BlowingCandles', 'BodyWeightSquats', 'Bowling', 'BoxingPunchingBag', 'BoxingSpeedBag', 'BreastStroke', 'BrushingTeeth', 'CleanAndJerk', 'CliffDiving', 'CricketBowling', 'CricketShot', 'CuttingInKitchen', 'Diving', 'Drumming', 'Fencing', 'FieldHockeyPenalty', 'FloorGymnastics', 'FrisbeeCatch', 'FrontCrawl', 'GolfSwing', 'Haircut', 'Hammering', 'HammerThrow', 'HandstandPushups', 'HandstandWalking', 'HeadMassage', 'HighJump', 'HorseRace', 'HorseRiding', 'HulaHoop', 'IceDancing', 'JavelinThrow', 'JugglingBalls', 'JumpingJack', 'JumpRope', 'Kayaking', 'Knitting', 'LongJump', 'Lunges', 'MilitaryParade', 'Mixing', 'MoppingFloor', 'Nunchucks', 'ParallelBars', 'PizzaTossing', 'PlayingCello', 'PlayingDaf', 'PlayingDhol', 'PlayingFlute', 'PlayingGuitar', 'PlayingPiano', 'PlayingSitar', 'PlayingTabla', 'PlayingViolin', 'PoleVault', 'PommelHorse', 'PullUps', 'Punch', 'PushUps', 'Rafting', 'RockClimbingIndoor', 'RopeClimbing', 'Rowing', 'SalsaSpin', 'ShavingBeard', 'Shotput', 'SkateBoarding', 'Skiing', 'Skijet', 'SkyDiving', 'SoccerJuggling', 'SoccerPenalty', 'StillRings', 'SumoWrestling', 'Surfing', 'Swing', 'TableTennisShot', 'TaiChi', 'TennisSwing', 'ThrowDiscus', 'TrampolineJumping', 'Typing', 'UnevenBars', 'VolleyballSpiking', 'WalkingWithDog', 'WallPushups', 'WritingOnBoard', 'YoYo']
     elif args.data_name == 'hmdb51':
         num_class = 51
+        classes = ['smile', 'clap', 'climb', 'cartwheel', 'pushup', 'push', 'somersault', 'turn', 'walk', 'shake_hands', 'pick', 'chew', 'jump', 'pour', 'smoke', 'shoot_bow', 'swing_baseball', 'kick', 'catch', 'golf', 'dribble', 'draw_sword', 'laugh', 'ride_horse', 'fall_floor', 'stand', 'sword', 'shoot_gun', 'kiss', 'eat', 'sword_exercise', 'flic_flac', 'handstand', 'brush_hair', 'pullup', 'throw', 'sit', 'shoot_ball', 'fencing', 'run', 'wave', 'drink', 'situp', 'punch', 'hit', 'ride_bike', 'kick_ball', 'hug', 'climb_stairs', 'dive', 'talk']
     else:
         raise ValueError('Unknown dataset '+args.data_name)
     net = Model(
@@ -119,6 +121,7 @@ def main():
         return scores.data.cpu().numpy().copy()
     video_scores = forward_video(inp)
     classify_num = np.argmax(video_scores)
+    print("the classify result is {}#{}".format(classify_num, classes[classify_num]))
 
 
 if __name__ == "__main__":
