@@ -1,3 +1,5 @@
 data/hmdb51
 data/ucf101
 *.pth.tar
+data_loader/build
+__pycache__
