@@ -178,6 +178,8 @@ class CoviarDataSet(data.Dataset):
                 img = img[..., ::-1]
 
             frames.append(img)
+        
+        # 此处截断，为clinet和server分界
 
         frames = self._transform(frames)
 
