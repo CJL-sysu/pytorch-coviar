@@ -1,3 +1,9 @@
+本项目基于开源仓库https://github.com/chaoyuaw/pytorch-coviar
+
+将特征提取分为本地端和服务端，中间通过网络传输无法复原出原视频的特征矩阵列表，可解决本地算力不足的问题，且保护用户隐私。
+
+在项目根目录下的代码主要用于训练和测试神经网络，work文件夹下为项目具体实现的代码
+
 # Compressed Video Action Recognition  <br>
 [Chao-Yuan Wu](https://www.cs.utexas.edu/~cywu/), 
 [Manzil Zaheer](http://www.manzil.ml/),
