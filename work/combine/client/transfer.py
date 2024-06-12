@@ -3,7 +3,7 @@ import os
 import socket
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from loader import get_frames_file
+#from loader import get_frames_file
 
 
 

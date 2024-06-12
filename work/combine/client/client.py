@@ -45,3 +45,6 @@ def main():
     args = parse_args()
     mkdir(args)
     transfer_worker(args)
+    
+if __name__ == "__main__":
+    main()
