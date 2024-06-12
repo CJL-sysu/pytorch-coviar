@@ -62,8 +62,10 @@ class FileMonitorHandler(FileSystemEventHandler):
                 f"cd tmp && ffmpeg -i {mp4_filename} -c:v mpeg4 -f rawvideo {mpeg4_filename}"
             )
             bin_filename = mp4_filename[0: len(mp4_filename)-3] + "bin" # 提取的特征矩阵列表文件名，例如hello.bin
-            get_frames_file(mpeg4_filename, self.args, bin_filename)
-            
+            #get_frames_file(mpeg4_filename, self.args, bin_filename)
+            os.system(
+                f"python loader.py --video_path {mpeg4_filename} --representation {self.args.representation} --test_segments {self.args.test_segments} --store_file {bin_filename}" + "--no_accumulation" if self.args.no_accumulation else ""
+            )
             
             os.system(f"cd tmp && mv {bin_filename} ../send")
             os.system(f"rm tmp/*")
