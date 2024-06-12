@@ -121,8 +121,9 @@ def main():
         return scores.data.cpu().numpy().copy()
     video_scores = forward_video(inp)
     classify_num = np.argmax(video_scores)
-    print("the classify result is {}#{}".format(classify_num, classes[classify_num]))
+    return (classify_num, classes[classify_num])
 
 
 if __name__ == "__main__":
-    main()
+    classify_num, classify = main()
+    print("the classify result is {}#{}".format(classify_num, classify))
