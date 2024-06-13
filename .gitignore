@@ -2,3 +2,6 @@ data/hmdb51
 data/ucf101
 data_loader/build
 __pycache__
+tmp
+send
+log
