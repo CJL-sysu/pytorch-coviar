@@ -6,9 +6,9 @@ import socket
 # config begin
 
 # ip address of server
-ip = '172.18.198.220'
+ip = '127.0.0.1'
 # server should listen on this port
-port = 12345
+port = 6001
 receive_path = "receive"
 
 # config end

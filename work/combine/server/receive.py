@@ -2,41 +2,34 @@
 
 import os
 import socket
+import argparse
+import server
 
-# config begin
 
-# ip address of server
-ip = '172.18.198.220'
-# server should listen on this port
-port = 12345
-receive_path = "receive"
-
-# config end
-
-def receive_file(server_socket, filename):
+def receive_file(server_socket, filepath):
     client_socket, addr = server_socket.accept()
     print(f"Connection from {addr[0]}:{addr[1]}")
     try:
-        with open(filename, 'wb') as file:
+        with open(filepath, 'wb') as file:
             while True:
                 data = client_socket.recv(1024)
                 if not data:
                     break
                 file.write(data)
-        print(f"Received {filename} successfully.")
+        print(f"Received {filepath} successfully.")
         client_socket.close()
     except Exception as e:
-        print(f"Error receiving {filename}: {e}")
+        print(f"Error receiving {filepath}: {e}")
 
 
-def main():
-    host = ip
+def main(args):
+    host = args.ip
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((host, port))
+    server_socket.bind((host, args.port))
     server_socket.listen(1)
 
-    print(f"Server listening on {host}:{port}")
+    print(f"Server listening on {host}:{args.port}")
 
     while True:
         client_socket, addr = server_socket.accept()
@@ -44,10 +37,42 @@ def main():
 
         filename = client_socket.recv(1024).decode()
         client_socket.close()
-        receive_file(server_socket, f"{receive_path}/{filename}")
+        filepath = f"{args.receive_path}/{filename}"
+        receive_file(server_socket, filepath)
+        classify_num, classify = server.main(args)
+        print("the classify result is {}#{}".format(classify_num, classify))
 
+
+def parse_args():
+    # parse args
+    # test_segments和representation必须和client端保持一致
+    parser = argparse.ArgumentParser(description="classify video")
+    parser.add_argument("--data_name", type=str, choices=["ucf101", "hmdb51"])
+    parser.add_argument("--representation", type=str, choices=["iframe", "residual", "mv"])
+    parser.add_argument("--test_segments", type=int, default=25)
+    parser.add_argument("--arch", type=str)
+    parser.add_argument("--weights", type=str)
+    parser.add_argument("--test-crops", type=int, default=10)
+    parser.add_argument("--file_path", type=str)
+    parser.add_argument("--gpus", nargs="+", type=int, default=None)
+    parser.add_argument(
+        "-j",
+        "--workers",
+        default=1,
+        type=int,
+        metavar="N",
+        help="number of workers.",
+    )
+    parser.add_argument('--ip', type=str, default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=6001)
+    parser.add_argument('--receive_path', type=str, default='receive')
+    
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    if not os.path.exists(receive_path):
-        os.makedirs(receive_path)
-    main()
+    args = parse_args()
+    
+    if not os.path.exists(args.receive_path):
+        os.makedirs(args.receive_path)
+    main(args)

@@ -1,6 +1,10 @@
 data/hmdb51
 data/ucf101
 data_loader/build
+hmdb51_iframe*
+hmdb51_residual*
+*.txt.npz
+.ipynb_checkpoints
 __pycache__
 tmp
 send

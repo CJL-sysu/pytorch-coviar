@@ -2,7 +2,7 @@ import argparse
 import pickle
 import numpy as np
 import torch
-from transforms import GroupCenterCrop
+from transforms import GroupCenterCrop, color_aug
 from transforms import GroupOverSample
 from transforms import GroupScale
 from model import Model
@@ -13,11 +13,33 @@ def load_list_from_bin_file(file_path):
         list_ = pickle.load(f)
     return list_
 
+def clip_and_scale(img, size):
+    return (img * (127.5 / size)).astype(np.int32)
+
 def get_input(file_path, transform, representation):
     """
         representation必须和client一致
     """
     frames = load_list_from_bin_file(file_path)
+    for i, img in enumerate(frames):
+        if img is None:
+            # print('Error: loading video %s failed.' % self._video_path)
+            img = np.zeros((256, 256, 2)) if representation == 'mv' else np.zeros((256, 256, 3))
+        else:
+            if representation == 'mv':
+                img = clip_and_scale(img, 20)
+                img += 128
+                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+            elif representation == 'residual':
+                img += 128
+                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+
+        if representation == 'iframe':
+            img = color_aug(img)
+
+            # BGR to RGB. (PyTorch uses RGB according to doc.)
+            img = img[..., ::-1]
+        frames[i] = img
     frames = transform(frames)
     frames = np.array(frames)
     frames = np.transpose(frames, (0, 3, 1, 2))
@@ -60,8 +82,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def main():
-    args = parse_args()
+def main(args):
     if args.data_name == 'ucf101':
         num_class = 101
         classes = ['ApplyEyeMakeup', 'ApplyLipstick', 'Archery', 'BabyCrawling', 'BalanceBeam', 'BandMarching', 'BaseballPitch', 'Basketball', 'BasketballDunk', 'BenchPress', 'Biking', 'Billiards', 'BlowDryHair', 'BlowingCandles', 'BodyWeightSquats', 'Bowling', 'BoxingPunchingBag', 'BoxingSpeedBag', 'BreastStroke', 'BrushingTeeth', 'CleanAndJerk', 'CliffDiving', 'CricketBowling', 'CricketShot', 'CuttingInKitchen', 'Diving', 'Drumming', 'Fencing', 'FieldHockeyPenalty', 'FloorGymnastics', 'FrisbeeCatch', 'FrontCrawl', 'GolfSwing', 'Haircut', 'Hammering', 'HammerThrow', 'HandstandPushups', 'HandstandWalking', 'HeadMassage', 'HighJump', 'HorseRace', 'HorseRiding', 'HulaHoop', 'IceDancing', 'JavelinThrow', 'JugglingBalls', 'JumpingJack', 'JumpRope', 'Kayaking', 'Knitting', 'LongJump', 'Lunges', 'MilitaryParade', 'Mixing', 'MoppingFloor', 'Nunchucks', 'ParallelBars', 'PizzaTossing', 'PlayingCello', 'PlayingDaf', 'PlayingDhol', 'PlayingFlute', 'PlayingGuitar', 'PlayingPiano', 'PlayingSitar', 'PlayingTabla', 'PlayingViolin', 'PoleVault', 'PommelHorse', 'PullUps', 'Punch', 'PushUps', 'Rafting', 'RockClimbingIndoor', 'RopeClimbing', 'Rowing', 'SalsaSpin', 'ShavingBeard', 'Shotput', 'SkateBoarding', 'Skiing', 'Skijet', 'SkyDiving', 'SoccerJuggling', 'SoccerPenalty', 'StillRings', 'SumoWrestling', 'Surfing', 'Swing', 'TableTennisShot', 'TaiChi', 'TennisSwing', 'ThrowDiscus', 'TrampolineJumping', 'Typing', 'UnevenBars', 'VolleyballSpiking', 'WalkingWithDog', 'WallPushups', 'WritingOnBoard', 'YoYo']
@@ -74,11 +95,11 @@ def main():
         num_class, args.test_segments, args.representation, base_model=args.arch
     )  # 使用预训练模型resnet构建网络
     checkpoint = torch.load(args.weights)  # 加载训练好的模型参数
-    print(
-        "model epoch {} best prec@1: {}".format(
-            checkpoint["epoch"], checkpoint["best_prec1"]
-        )
-    )
+    # print(
+    #     "model epoch {} best prec@1: {}".format(
+    #         checkpoint["epoch"], checkpoint["best_prec1"]
+    #     )
+    # )
     base_dict = {
         ".".join(k.split(".")[1:]): v for k, v in list(checkpoint["state_dict"].items())
     }
@@ -125,5 +146,6 @@ def main():
 
 
 if __name__ == "__main__":
-    classify_num, classify = main()
+    args = parse_args()
+    classify_num, classify = main(args)
     print("the classify result is {}#{}".format(classify_num, classify))
