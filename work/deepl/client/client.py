@@ -90,21 +90,21 @@ class CoviarData:
                        representation_idx, self._accumulate)
             if img is None:
                 print('Error: loading video %s failed.' % self._video_path)
-                img = np.zeros((256, 256, 2)) if self._representation == 'mv' else np.zeros((256, 256, 3))
-            else:
-                if self._representation == 'mv':
-                    img = clip_and_scale(img, 20)
-                    img += 128
-                    img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
-                elif self._representation == 'residual':
-                    img += 128
-                    img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+            #     img = np.zeros((256, 256, 2)) if self._representation == 'mv' else np.zeros((256, 256, 3))
+            # else:
+            #     if self._representation == 'mv':
+            #         img = clip_and_scale(img, 20)
+            #         img += 128
+            #         img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+            #     elif self._representation == 'residual':
+            #         img += 128
+            #         img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
 
-            if self._representation == 'iframe':
-                img = color_aug(img)
+            # if self._representation == 'iframe':
+            #     img = color_aug(img)
 
-                # BGR to RGB. (PyTorch uses RGB according to doc.)
-                img = img[..., ::-1]
+            #     # BGR to RGB. (PyTorch uses RGB according to doc.)
+            #     img = img[..., ::-1]
 
             frames.append(img)
         
