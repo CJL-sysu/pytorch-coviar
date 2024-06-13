@@ -23,5 +23,6 @@
 ```bash
 python loader.py --video_path ${your-video.mp4} --representation mv
 # 例如
-python loader.py --video_path test/April_09_brush_hair_u_nm_np1_ba_goo_0.mp4 --representation mv
+python loader.py --video_path test/April_09_brush_hair_u_nm_np1_ba_goo_0.mp4 --representation mv --store_file frames_mv.bin
+python loader.py --video_path test/April_09_brush_hair_u_nm_np1_ba_goo_0.mp4 --representation residual --store_file frames_res.bin
 ```
