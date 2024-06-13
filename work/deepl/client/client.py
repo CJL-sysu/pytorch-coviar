@@ -7,6 +7,8 @@ import pickle
 
 GOP_SIZE = 12
 
+def clip_and_scale(img, size):
+    return (img * (127.5 / size)).astype(np.int32)
 
 def get_gop_pos(frame_idx, representation):
     gop_index = frame_idx // GOP_SIZE
@@ -45,6 +47,7 @@ class CoviarData:
         elif self._representation == 'residual':
             representation_idx = 2
         else:
+            raise ValueError('Unknown representation %s.(iframe is not supported)' % self._representation)
             representation_idx = 0
         frames = []
         for seg in range(self._num_segments): # num_segments为加载切片的数量
@@ -53,15 +56,15 @@ class CoviarData:
                        representation_idx, self._accumulate)
             if img is None:
                 print('Error: loading video %s failed.' % self._video_path)
-            #     img = np.zeros((256, 256, 2)) if self._representation == 'mv' else np.zeros((256, 256, 3))
-            # else:
-            #     if self._representation == 'mv':
-            #         img = clip_and_scale(img, 20)
-            #         img += 128
-            #         img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
-            #     elif self._representation == 'residual':
-            #         img += 128
-            #         img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+                img = np.zeros((256, 256, 2)) if self._representation == 'mv' else np.zeros((256, 256, 3))
+            else:
+                if self._representation == 'mv':
+                    img = clip_and_scale(img, 20)
+                    img += 128
+                    img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+                elif self._representation == 'residual':
+                    img += 128
+                    img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
 
             # if self._representation == 'iframe':
             #     img = color_aug(img)

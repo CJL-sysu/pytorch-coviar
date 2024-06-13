@@ -21,25 +21,27 @@ def get_input(file_path, transform, representation):
         representation必须和client一致
     """
     frames = load_list_from_bin_file(file_path)
-    for i, img in enumerate(frames):
-        if img is None:
-            # print('Error: loading video %s failed.' % self._video_path)
-            img = np.zeros((256, 256, 2)) if representation == 'mv' else np.zeros((256, 256, 3))
-        else:
-            if representation == 'mv':
-                img = clip_and_scale(img, 20)
-                img += 128
-                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
-            elif representation == 'residual':
-                img += 128
-                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+    if representation == 'iframe':
+        raise ValueError('iframe is not supported')
+    # for i, img in enumerate(frames):
+    #     if img is None:
+    #         # print('Error: loading video %s failed.' % self._video_path)
+    #         img = np.zeros((256, 256, 2)) if representation == 'mv' else np.zeros((256, 256, 3))
+    #     else:
+    #         if representation == 'mv':
+    #             img = clip_and_scale(img, 20)
+    #             img += 128
+    #             img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+    #         elif representation == 'residual':
+    #             img += 128
+    #             img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
 
-        if representation == 'iframe':
-            img = color_aug(img)
+    #     if representation == 'iframe':
+    #         img = color_aug(img)
 
-            # BGR to RGB. (PyTorch uses RGB according to doc.)
-            img = img[..., ::-1]
-        frames[i] = img
+    #         # BGR to RGB. (PyTorch uses RGB according to doc.)
+    #         img = img[..., ::-1]
+    #     frames[i] = img
     frames = transform(frames)
     frames = np.array(frames)
     frames = np.transpose(frames, (0, 3, 1, 2))

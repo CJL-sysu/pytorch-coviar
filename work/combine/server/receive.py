@@ -39,6 +39,7 @@ def main(args):
         client_socket.close()
         filepath = f"{args.receive_path}/{filename}"
         receive_file(server_socket, filepath)
+        args.file_path = filepath
         classify_num, classify = server.main(args)
         print("the classify result is {}#{}".format(classify_num, classify))
 
