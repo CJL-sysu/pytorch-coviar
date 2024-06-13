@@ -9,14 +9,18 @@ from watchdog.observers import Observer
 
 def send_file(args, filename):
     try:
+        print("\x1b[32m First connect start \x1b[0m")
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((args.ip, args.port))
+        print(f"\x1b[32m First connect success to {args.ip} at port {args.port} \x1b[0m")
         file_path = args.send_dir + "/" + filename
         client_socket.send(filename.encode())
         client_socket.close()
         #
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((args.ip, args.port))
+        print(f"\x1b[32m Second connect success to {args.ip} at port {args.port} \x1b[0m")
+        i=0
         with open(file_path, "rb") as file:
             while True:
                 data = file.read(1024)
