@@ -9,4 +9,10 @@ WARNING: ini format is deprecated and the support will be removed in the future,
 [0m[1;31m2024-06-13 11:19:35.199 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
 [0m[1;31m2024-06-13 11:19:46.893 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
 [0m[1;31m2024-06-13 11:19:46.935 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:12.735 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:12.778 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:27.981 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:28.025 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:41.751 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-13 11:54:41.795 [E] [proxy/proxy.go:204] [abd5ef548689f78c] [gpu-server] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
 [0m

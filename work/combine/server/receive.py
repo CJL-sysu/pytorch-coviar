@@ -23,10 +23,8 @@ def receive_file(server_socket, filepath):
 
 
 def main(args):
-    host = args.ip
-
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((host, args.port))
+    server_socket.bind((args.ip, args.port))
     server_socket.listen(1)
 
     print(f"Server listening on {host}:{args.port}")

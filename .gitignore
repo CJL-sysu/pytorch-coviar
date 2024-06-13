@@ -8,4 +8,6 @@ hmdb51_residual*
 __pycache__
 tmp
 send
+receive
+test
 log
