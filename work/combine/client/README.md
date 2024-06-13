@@ -14,8 +14,9 @@
 
 启动视频推流
 
+
 ```bash
-ffmpeg -i rtsp://192.168.134.32:4336/stream1 -c:v copy -f segment -segment_time 10 -reset_timestamps 1 "video/output_%03d.264"
+nohup rpicam-vid -t 0 --inline -o - | cvlc stream:///dev/stdin --sout '#rtp{sdp=rtsp://:4336/stream1}' :demux=h264 2>&1 &
 ```
 
 启动client.py
@@ -26,7 +27,7 @@ ffmpeg -i rtsp://192.168.134.32:4336/stream1 -c:v copy -f segment -segment_time 
 
 启动视频分段拉流
 ```bash
-nohup rpicam-vid -t 0 --inline -o - | cvlc stream:///dev/stdin --sout '#rtp{sdp=rtsp://:4336/stream1}' :demux=h264 2>&1 &
+ffmpeg -i rtsp://127.0.0.1:4336/stream1 -c:v copy -f segment -segment_time 10 -reset_timestamps 1 "video/output_%03d.264"
 ```
 
 
