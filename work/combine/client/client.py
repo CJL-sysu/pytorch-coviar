@@ -28,8 +28,8 @@ def parse_args():
                         help='disable accumulation of motion vectors and residuals.')
     #parser.add_argument('--store_file', type=str, default= "frames.bin")
     
-    parser.add_argument('--ip', type=str, default='8.130.16.177')
-    parser.add_argument('--port', type=int, default=6001)
+    parser.add_argument('--ip', type=str, default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=6000)
     parser.add_argument('--listen_dir', type=str, default='video')
     parser.add_argument('--tmp_dir', type=str, default='tmp')
     parser.add_argument('--send_dir', type=str, default='send')

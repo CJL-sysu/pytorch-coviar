@@ -12,9 +12,23 @@
 
 ### 启动client
 
+启动视频推流
+
+```bash
+ffmpeg -i rtsp://192.168.134.32:4336/stream1 -c:v copy -f segment -segment_time 10 -reset_timestamps 1 "video/output_%03d.264"
+```
+
+启动client.py
+
 ```bash
 /bin/python client.py --representation mv --ip ${server-ip} --port ${server-port}
 ```
+
+启动视频分段拉流
+```bash
+nohup rpicam-vid -t 0 --inline -o - | cvlc stream:///dev/stdin --sout '#rtp{sdp=rtsp://:4336/stream1}' :demux=h264 2>&1 &
+```
+
 
 ### 测试loader.py
 在test文件夹中，提供一个 mpeg4 格式的视频供测试。实际使用中，这个视频来自摄像头实时拉取的视频切片，且经过 mpeg4 格式转换
