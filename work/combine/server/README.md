@@ -15,7 +15,7 @@ python server.py --gpus 0 --arch resnet18 --data_name hmdb51 --representation re
 
 示例
 ```bash
-root@autodl-container-908a4c8ded-ea24d874:~/autodl-tmp/pytorch-coviar/work/server# python server.py --gpus 0 --arch resnet18 --data_name hmdb51 --representation mv --weights /root/autodl-tmp/pytorch-coviar/hmdb51_mv_model_mv_model_best.pth.tar --file_path /root/autodl-tmp/pytorch-coviar/frames.bin
+root@autodl-container-908a4c8ded-ea24d874:~/autodl-tmp/pytorch-coviar/work/deepl/server# python server.py --gpus 0 --arch resnet18 --data_name hmdb51 --representation mv --weights hmdb51_mv_model_mv_model_best.pth.tar --file_path test/frames.bin
 
 Initializing model:
     base model:         resnet18.

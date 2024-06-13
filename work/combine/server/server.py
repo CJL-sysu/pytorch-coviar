@@ -60,8 +60,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def main():
-    args = parse_args()
+def main(args):
     if args.data_name == 'ucf101':
         num_class = 101
         classes = ['ApplyEyeMakeup', 'ApplyLipstick', 'Archery', 'BabyCrawling', 'BalanceBeam', 'BandMarching', 'BaseballPitch', 'Basketball', 'BasketballDunk', 'BenchPress', 'Biking', 'Billiards', 'BlowDryHair', 'BlowingCandles', 'BodyWeightSquats', 'Bowling', 'BoxingPunchingBag', 'BoxingSpeedBag', 'BreastStroke', 'BrushingTeeth', 'CleanAndJerk', 'CliffDiving', 'CricketBowling', 'CricketShot', 'CuttingInKitchen', 'Diving', 'Drumming', 'Fencing', 'FieldHockeyPenalty', 'FloorGymnastics', 'FrisbeeCatch', 'FrontCrawl', 'GolfSwing', 'Haircut', 'Hammering', 'HammerThrow', 'HandstandPushups', 'HandstandWalking', 'HeadMassage', 'HighJump', 'HorseRace', 'HorseRiding', 'HulaHoop', 'IceDancing', 'JavelinThrow', 'JugglingBalls', 'JumpingJack', 'JumpRope', 'Kayaking', 'Knitting', 'LongJump', 'Lunges', 'MilitaryParade', 'Mixing', 'MoppingFloor', 'Nunchucks', 'ParallelBars', 'PizzaTossing', 'PlayingCello', 'PlayingDaf', 'PlayingDhol', 'PlayingFlute', 'PlayingGuitar', 'PlayingPiano', 'PlayingSitar', 'PlayingTabla', 'PlayingViolin', 'PoleVault', 'PommelHorse', 'PullUps', 'Punch', 'PushUps', 'Rafting', 'RockClimbingIndoor', 'RopeClimbing', 'Rowing', 'SalsaSpin', 'ShavingBeard', 'Shotput', 'SkateBoarding', 'Skiing', 'Skijet', 'SkyDiving', 'SoccerJuggling', 'SoccerPenalty', 'StillRings', 'SumoWrestling', 'Surfing', 'Swing', 'TableTennisShot', 'TaiChi', 'TennisSwing', 'ThrowDiscus', 'TrampolineJumping', 'Typing', 'UnevenBars', 'VolleyballSpiking', 'WalkingWithDog', 'WallPushups', 'WritingOnBoard', 'YoYo']
@@ -74,11 +73,11 @@ def main():
         num_class, args.test_segments, args.representation, base_model=args.arch
     )  # 使用预训练模型resnet构建网络
     checkpoint = torch.load(args.weights)  # 加载训练好的模型参数
-    print(
-        "model epoch {} best prec@1: {}".format(
-            checkpoint["epoch"], checkpoint["best_prec1"]
-        )
-    )
+    # print(
+    #     "model epoch {} best prec@1: {}".format(
+    #         checkpoint["epoch"], checkpoint["best_prec1"]
+    #     )
+    # )
     base_dict = {
         ".".join(k.split(".")[1:]): v for k, v in list(checkpoint["state_dict"].items())
     }
@@ -125,5 +124,6 @@ def main():
 
 
 if __name__ == "__main__":
-    classify_num, classify = main()
+    args = parse_args()
+    classify_num, classify = main(args)
     print("the classify result is {}#{}".format(classify_num, classify))
