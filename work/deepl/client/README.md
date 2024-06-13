@@ -2,15 +2,7 @@
 
 部署在本地，用于从格式化为mpeg4的视频文件提取特征矩阵列表
 
-### 环境配置
 
-需要在client端配置 coviar 环境，详见 https://docs.qq.com/aio/DVGFqeGdWS3NhclZK?p=iC8mFVF7uD4XJqzRMiXdmx ，提供x86和arm两种架构的配置教程
-
-需要安装 python 包：
-
-```bash
-pip install opencv-python
-```
 
 ### 启动client
 

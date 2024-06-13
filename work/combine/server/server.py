@@ -2,7 +2,7 @@ import argparse
 import pickle
 import numpy as np
 import torch
-from transforms import GroupCenterCrop
+from transforms import GroupCenterCrop, color_aug
 from transforms import GroupOverSample
 from transforms import GroupScale
 from model import Model
@@ -13,11 +13,33 @@ def load_list_from_bin_file(file_path):
         list_ = pickle.load(f)
     return list_
 
+def clip_and_scale(img, size):
+    return (img * (127.5 / size)).astype(np.int32)
+
 def get_input(file_path, transform, representation):
     """
         representation必须和client一致
     """
     frames = load_list_from_bin_file(file_path)
+    for i, img in enumerate(frames):
+        if img is None:
+            # print('Error: loading video %s failed.' % self._video_path)
+            img = np.zeros((256, 256, 2)) if representation == 'mv' else np.zeros((256, 256, 3))
+        else:
+            if representation == 'mv':
+                img = clip_and_scale(img, 20)
+                img += 128
+                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+            elif representation == 'residual':
+                img += 128
+                img = (np.minimum(np.maximum(img, 0), 255)).astype(np.uint8)
+
+        if representation == 'iframe':
+            img = color_aug(img)
+
+            # BGR to RGB. (PyTorch uses RGB according to doc.)
+            img = img[..., ::-1]
+        frames[i] = img
     frames = transform(frames)
     frames = np.array(frames)
     frames = np.transpose(frames, (0, 3, 1, 2))
