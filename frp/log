@@ -1,0 +1,16 @@
+nohup: ignoring input
+WARNING: ini format is deprecated and the support will be removed in the future, please use yaml/json/toml format instead!
+[1;34m2024-06-12 22:23:43.873 [I] [sub/root.go:142] start frpc service for config file [frpc.ini]
+[0m[1;34m2024-06-12 22:23:43.873 [I] [client/service.go:294] try to connect to server...
+[0m[1;34m2024-06-12 22:23:43.994 [I] [client/service.go:286] [badd89df291aa2f5] login to server success, get run id [badd89df291aa2f5]
+[0m[1;34m2024-06-12 22:23:43.994 [I] [proxy/proxy_manager.go:173] [badd89df291aa2f5] proxy added: [ssh]
+[0m[1;34m2024-06-12 22:23:44.038 [I] [client/control.go:170] [badd89df291aa2f5] [ssh] start proxy success
+[0m[1;31m2024-06-12 22:33:03.391 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:03.553 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:11.779 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:12.005 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:12.131 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:13.361 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:14.551 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m[1;31m2024-06-12 22:33:14.773 [E] [proxy/proxy.go:204] [badd89df291aa2f5] [ssh] connect to local service [127.0.0.1:6000] error: dial tcp 127.0.0.1:6000: connect: connection refused
+[0m
