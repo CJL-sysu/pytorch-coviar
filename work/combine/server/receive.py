@@ -27,7 +27,7 @@ def main(args):
     server_socket.bind((args.ip, args.port))
     server_socket.listen(1)
 
-    print(f"Server listening on {host}:{args.port}")
+    print(f"Server listening on {args.ip}:{args.port}")
 
     while True:
         client_socket, addr = server_socket.accept()
