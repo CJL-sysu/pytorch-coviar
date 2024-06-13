@@ -7,7 +7,7 @@
 ```bash
 python receive.py --gpus 0 --arch resnet18 --data_name hmdb51 --representation mv --weights hmdb51_mv_model_mv_model_best.pth.tar --port ${your-port}
 ```
-port如果不设置，默认为6001
+port如果不设置，默认为6000
 
 ### 测试深度学习实现
 
