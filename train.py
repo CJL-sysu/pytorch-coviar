@@ -37,6 +37,17 @@ def main():
 
     model = Model(num_class, args.num_segments, args.representation,
                   base_model=args.arch)  # 创建模型
+    # 加载训练好的模型参数
+    if args.weights is not None:
+        checkpoint = torch.load(args.weights) 
+        print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
+
+        base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
+        model.load_state_dict(base_dict) # 导入模型参数
+    else:
+        print('No pretrained model')
+        return
+    
     print(model)
 
     train_loader = torch.utils.data.DataLoader(
@@ -131,7 +142,7 @@ def train(train_loader, model, criterion, optimizer, epoch, cur_lr):
 
         data_time.update(time.time() - end)  # 记录数据加载时间
 
-        target = target.cuda(async=True)
+        target = target.cuda(non_blocking=True)
         input_var = torch.autograd.Variable(input)
         target_var = torch.autograd.Variable(target)
 
@@ -142,9 +153,9 @@ def train(train_loader, model, criterion, optimizer, epoch, cur_lr):
         loss = criterion(output, target_var)  # 计算损失
 
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top5.update(prec5[0], input.size(0))
+        losses.update(loss.data, input.size(0))
+        top1.update(prec1, input.size(0))
+        top5.update(prec5, input.size(0))
 
         optimizer.zero_grad()
 
@@ -179,7 +190,7 @@ def validate(val_loader, model, criterion):
 
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
-        target = target.cuda(async=True)
+        target = target.cuda(non_blocking=True)
         input_var = torch.autograd.Variable(input, volatile=True)
         target_var = torch.autograd.Variable(target, volatile=True)
 
@@ -190,9 +201,9 @@ def validate(val_loader, model, criterion):
 
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
 
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top5.update(prec5[0], input.size(0))
+        losses.update(loss.data, input.size(0))
+        top1.update(prec1, input.size(0))
+        top5.update(prec5, input.size(0))
 
         batch_time.update(time.time() - end)  # 记录批处理时间
         end = time.time()
@@ -258,7 +269,7 @@ def accuracy(output, target, topk=(1,)):
 
     res = []
     for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
+        correct_k = correct[:k].reshape(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res  # 计算准确度
 

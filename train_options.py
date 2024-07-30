@@ -72,3 +72,6 @@ parser.add_argument(
 parser.add_argument(
     "--gpus", nargs="+", type=int, default=None, help="GPU编号。"
 )  # 设置GPU编号，默认为None。
+parser.add_argument(
+    "--weights",  type=str, default=None, help="权重路径"
+)

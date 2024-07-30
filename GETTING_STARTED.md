@@ -84,6 +84,7 @@ python train.py --lr 0.0003 --batch-size 40 --arch resnet152 \
  	--gpus 0 1
 
 # Motion vector model.
+## (1)
 python train.py --lr 0.005 --batch-size 80 --arch resnet18 \
  	--data-name hmdb51 --representation mv \
  	--data-root data/hmdb51/mpeg4_videos \
@@ -91,7 +92,29 @@ python train.py --lr 0.005 --batch-size 80 --arch resnet18 \
  	--test-list data/datalists/hmdb51_split1_test.txt \
  	--model-prefix hmdb51_mv_model \
  	--lr-steps 120 200 280  --epochs 360 \
- 	--gpus 0
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+
+## (2)
+python train.py --lr 0.005 --batch-size 80 --arch resnet18 \
+ 	--data-name hmdb51 --representation mv \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--train-list data/datalists/hmdb51_split2_train.txt \
+ 	--test-list data/datalists/hmdb51_split2_test.txt \
+ 	--model-prefix hmdb51_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+## (3)
+python train.py --lr 0.005 --batch-size 80 --arch resnet18 \
+ 	--data-name hmdb51 --representation mv \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--train-list data/datalists/hmdb51_split3_train.txt \
+ 	--test-list data/datalists/hmdb51_split3_test.txt \
+ 	--model-prefix hmdb51_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
 
 # Residual model.
 python train.py --lr 0.001 --batch-size 80 --arch resnet18 \

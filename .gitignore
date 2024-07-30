@@ -13,3 +13,7 @@ test
 log
 video
 test
+coviar.egg-info
+data_loader/coviar.egg-info
+data_loader/dist
+test.ipynb
