@@ -180,6 +180,14 @@ python test.py --gpus 0 \
 	--weights [path to model].pth.tar \
 	--save-scores [output score filename]
 
+python test.py --arch resnet18 \
+ 	--data-name hmdb51 --representation residual \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--test-list data/datalists/hmdb51_split1_test.txt \
+    --weights hmdb51_residual_model_residual_model_best.pth.tar \
+    --save-scores res_scores.txt \
+ 	--gpus 0
+
 ```
 performs full evaluation on the test set, and stores the results in `[output score filename]`.
 

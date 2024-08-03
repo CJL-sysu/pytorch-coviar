@@ -46,7 +46,7 @@ def main():
         model.load_state_dict(base_dict) # 导入模型参数
     else:
         print('No pretrained model')
-        return
+        # return
     
     print(model)
 

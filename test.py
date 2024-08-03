@@ -91,17 +91,18 @@ def main():
     output = []
 
     def forward_video(data): # 这里的 data 是输入的视频数据。
-        input_var = torch.autograd.Variable(data, volatile=True) # 包装数据，使其具备自动求导的功能。volatile=True 表示在该变量上不会进行反向传播。需要注意的是，在较新的 PyTorch 版本中（0.4.0及以后），Variable 和 volatile 已被弃用，直接使用 data 就可以。
-        scores = net(input_var) # 通过神经网络生成分数
-        scores = scores.view((-1, args.test_segments * args.test_crops) + scores.size()[1:])
-        scores = torch.mean(scores, dim=1) # 计算平均分数
+        with torch.no_grad():
+            input_var = torch.autograd.Variable(data) # 包装数据，使其具备自动求导的功能。volatile=True 表示在该变量上不会进行反向传播。需要注意的是，在较新的 PyTorch 版本中（0.4.0及以后），Variable 和 volatile 已被弃用，直接使用 data 就可以。
+            scores = net(input_var) # 通过神经网络生成分数
+            scores = scores.view((-1, args.test_segments * args.test_crops) + scores.size()[1:])
+            scores = torch.mean(scores, dim=1) # 计算平均分数
         return scores.data.cpu().numpy().copy() # 将结果转换为 NumPy 数组并返回
         # scores.data 获取张量数据，.cpu() 将数据从GPU转移到CPU（如果数据在GPU上），.numpy() 将数据转换为NumPy数组，最后 .copy() 生成数据的副本并返回。
 
 
     proc_start_time = time.time()
 
-
+    import gc
     for i, (data, label) in data_gen:
         video_scores = forward_video(data)
         output.append((video_scores, label[0])) # 预测分类可用 np.argmax(video_scores)求得
@@ -110,6 +111,8 @@ def main():
             print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
                                                                             total_num,
                                                                             float(cnt_time) / (i+1)))
+        del data, label, video_scores
+        gc.collect()
 
     video_pred = [np.argmax(x[0]) for x in output]
     video_labels = [x[1] for x in output]

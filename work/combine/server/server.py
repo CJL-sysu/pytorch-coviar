@@ -141,9 +141,17 @@ def main(args):
             (-1, args.test_segments * args.test_crops) + scores.size()[1:]
         )
         scores = torch.mean(scores, dim=1)
-        return scores.data.cpu().numpy().copy()
-    video_scores = forward_video(inp)
+        top5 = scores.data.topk(5)
+        return scores.data.cpu().numpy().copy(), top5
+    video_scores, top5 = forward_video(inp)
     classify_num = np.argmax(video_scores)
+    # print(video_scores)
+    indices = top5.indices.cpu().numpy().copy()[0]
+    values = top5.values.cpu().numpy().copy()[0]
+    print("top5:")
+    for i in range(5):
+        print(f"{i}#{classes[indices[i]]}:  {values[i]}")
+    
     return (classify_num, classes[classify_num])
 
 
