@@ -80,11 +80,11 @@ Initializing model:
         """.format(base_model, self._representation, num_class, self.num_segments)))
 
         self._prepare_base_model(base_model)
-        self._prepare_tsn(num_class)
+        self._prepare_tsn(base_model, num_class)
 
-    def _prepare_tsn(self, num_class):
+    def _prepare_tsn(self, base_model, num_class):
         """
-        准备 temparol segment networks (TSN,一个用于视频中动作识别的卷积网络体系结构)的相关设置。
+        准备 temporal segment networks (TSN,一个用于视频中动作识别的卷积网络体系结构)的相关设置。
 
         根据类别数调整基础模型的全连接层，并根据输入类型调整卷积层。
         如果输入的表示形式为运动矢量 (mv)，模型会调整其第一层卷积网络来处理两个通道的输入，并应用相应的批量归一化层。
@@ -93,19 +93,34 @@ Initializing model:
         参数:
             num_class (int): 分类任务的类别数。
         """
-        feature_dim = getattr(self.base_model, 'fc').in_features #获取基础模型（如ResNet152）中全连接层 (fc) 的输入特征数量
-        setattr(self.base_model, 'fc', nn.Linear(feature_dim, num_class)) #将基础模型的全连接层替换为一个新的全连接层，输入维度不变，输出维度为分类任务的类别数num_class。
+        if 'resnet' in base_model:
+            feature_dim = getattr(self.base_model, 'fc').in_features #获取基础模型（如ResNet152）中全连接层 (fc) 的输入特征数量
+            setattr(self.base_model, 'fc', nn.Linear(feature_dim, num_class)) #将基础模型的全连接层替换为一个新的全连接层，输入维度不变，输出维度为分类任务的类别数num_class。
 
-        if self._representation == 'mv': 
-            setattr(self.base_model, 'conv1',
-                    nn.Conv2d(2, 64, 
-                              kernel_size=(7, 7),
-                              stride=(2, 2),
-                              padding=(3, 3),
-                              bias=False)) #如果输入的表示形式为'mv',修改基础模型的第一层卷积层，使其接受2个通道的输入（通常是运动矢量的两个分量）。
-            self.data_bn = nn.BatchNorm2d(2) #添加一个2通道的批量归一化层
-        if self._representation == 'residual':
-            self.data_bn = nn.BatchNorm2d(3) #如果输入的表示形式为残差，代码会添加一个3通道的批量归一化层，
+            if self._representation == 'mv': 
+                setattr(self.base_model, 'conv1',
+                        nn.Conv2d(2, 64, 
+                                kernel_size=(7, 7),
+                                stride=(2, 2),
+                                padding=(3, 3),
+                                bias=False)) #如果输入的表示形式为'mv',修改基础模型的第一层卷积层，使其接受2个通道的输入（通常是运动矢量的两个分量）。
+                self.data_bn = nn.BatchNorm2d(2) #添加一个2通道的批量归一化层
+            if self._representation == 'residual':
+                self.data_bn = nn.BatchNorm2d(3) #如果输入的表示形式为残差，代码会添加一个3通道的批量归一化层，
+        elif 'swin' in base_model:
+            # print('swin transformer!')
+            self.base_model.head = nn.Linear(self.base_model.head.in_features, num_class)
+            if self._representation == 'mv':
+                original_conv = self.base_model.features[0][0]
+                new_conv = nn.Conv2d(2, original_conv.out_channels,
+                                    kernel_size=original_conv.kernel_size,
+                                    stride=original_conv.stride,
+                                    padding=original_conv.padding,
+                                    bias=False)
+                self.base_model.features[0][0] = new_conv
+                self.data_bn = nn.BatchNorm2d(2)
+            if self._representation == 'residual':
+                self.data_bn = nn.BatchNorm2d(3)
 
 
     def _prepare_base_model(self, base_model):
@@ -121,6 +136,9 @@ Initializing model:
         if 'resnet' in base_model:
             self.base_model = getattr(torchvision.models, base_model)(pretrained=True) #从torchvision.models中加载名为 base_model的模型
 
+            self._input_size = 224
+        elif 'swin' in base_model: # swin transformer
+            self.base_model = getattr(torchvision.models, base_model)(pretrained=True)
             self._input_size = 224
         else:
             raise ValueError('Unknown base model: {}'.format(base_model))

@@ -71,6 +71,10 @@ returns the accumulated motion vectors of the 9th frame of the 4th GOP.
 
 ## Training
 
+### hmdb51
+
+#### resnet
+
 For example, we used the following commands to train on HMDB-51.
 ```bash
 # I-frame model.
@@ -127,6 +131,47 @@ python train.py --lr 0.001 --batch-size 80 --arch resnet18 \
  	--gpus 0
 
 ```
+
+#### swin-transformer
+
+```bash
+# Motion vector model.
+## (1)
+python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+ 	--data-name hmdb51 --representation mv \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--train-list data/datalists/hmdb51_split1_train.txt \
+ 	--test-list data/datalists/hmdb51_split1_test.txt \
+ 	--model-prefix hmdb51_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+
+## (2)
+python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+ 	--data-name hmdb51 --representation mv \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--train-list data/datalists/hmdb51_split2_train.txt \
+ 	--test-list data/datalists/hmdb51_split2_test.txt \
+ 	--model-prefix hmdb51_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+## (3)
+python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+ 	--data-name hmdb51 --representation mv \
+ 	--data-root data/hmdb51/mpeg4_videos \
+ 	--train-list data/datalists/hmdb51_split3_train.txt \
+ 	--test-list data/datalists/hmdb51_split3_test.txt \
+ 	--model-prefix hmdb51_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+
+```
+
+### UCF101
+
 and for UCF-101, 
 ```bash
 # I-frame model.
