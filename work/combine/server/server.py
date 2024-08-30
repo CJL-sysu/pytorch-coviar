@@ -135,7 +135,8 @@ def main(args):
     net = torch.nn.DataParallel(net.cuda(devices[0]), device_ids=devices)
     net.eval()
     def forward_video(data):
-        input_var = torch.autograd.Variable(data, volatile=True)
+        with torch.no_grad():
+            input_var = torch.autograd.Variable(data)
         scores = net(input_var)
         scores = scores.view(
             (-1, args.test_segments * args.test_crops) + scores.size()[1:]

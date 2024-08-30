@@ -134,39 +134,41 @@ python train.py --lr 0.001 --batch-size 80 --arch resnet18 \
 
 #### swin-transformer
 
+batch size 不能太大，不然会爆显存
+
 ```bash
 # Motion vector model.
 ## (1)
-python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+python train.py --lr 0.005 --batch-size 24 --arch swin_v2_t \
  	--data-name hmdb51 --representation mv \
  	--data-root data/hmdb51/mpeg4_videos \
  	--train-list data/datalists/hmdb51_split1_train.txt \
  	--test-list data/datalists/hmdb51_split1_test.txt \
- 	--model-prefix hmdb51_mv_model \
+ 	--model-prefix hmdb51_mv_model_swin \
  	--lr-steps 120 200 280  --epochs 360 \
  	--gpus 0 \
-    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+    --weights hmdb51_mv_model_swin_mv_checkpoint.pth.tar
 
 ## (2)
-python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+python train.py --lr 0.005 --batch-size 24 --arch swin_v2_t \
  	--data-name hmdb51 --representation mv \
  	--data-root data/hmdb51/mpeg4_videos \
  	--train-list data/datalists/hmdb51_split2_train.txt \
  	--test-list data/datalists/hmdb51_split2_test.txt \
- 	--model-prefix hmdb51_mv_model \
+ 	--model-prefix hmdb51_mv_model_swin \
  	--lr-steps 120 200 280  --epochs 360 \
  	--gpus 0 \
-    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+    --weights hmdb51_mv_model_swin_mv_checkpoint.pth.tar
 ## (3)
-python train.py --lr 0.005 --batch-size 80 --arch swin_v2_t \
+python train.py --lr 0.005 --batch-size 24 --arch swin_v2_t \
  	--data-name hmdb51 --representation mv \
  	--data-root data/hmdb51/mpeg4_videos \
  	--train-list data/datalists/hmdb51_split3_train.txt \
  	--test-list data/datalists/hmdb51_split3_test.txt \
- 	--model-prefix hmdb51_mv_model \
+ 	--model-prefix hmdb51_mv_model_swin \
  	--lr-steps 120 200 280  --epochs 360 \
  	--gpus 0 \
-    --weights hmdb51_mv_model_mv_checkpoint.pth.tar
+    --weights hmdb51_mv_model_swin_mv_checkpoint.pth.tar
 
 ```
 
@@ -212,6 +214,25 @@ accordingly for training/testing on a different split.
 The hyperparameters here are slightly different from those used in the original paper, 
 because the pre-trained weights are different. 
 The original paper uses ResNet (pre-activation) pre-trained by MXNet, here we use ResNet (non-pre-activation) pre-trained by PyTorch. They offer similar results.
+
+### Charades
+
+#### resnet
+
+```bash
+# (1)
+python train.py --lr 0.005 --batch-size 80 --arch resnet18 \
+ 	--data-name charades --representation mv \
+ 	--data-root ../../data/charades1/Charades_v1_480/mpeg4_videos \
+ 	--train-list ../../data/charades1/datalist/charades_valid.txt \
+ 	--test-list ../../data/charades1/datalist/charades_valid.txt \
+ 	--model-prefix charades_mv_model \
+ 	--lr-steps 120 200 280  --epochs 360 \
+ 	--gpus 0 \
+    --weights charades_mv_model_mv_checkpoint.pth.tar
+
+```
+
 
 ## Testing
 

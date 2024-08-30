@@ -104,10 +104,16 @@ class CoviarDataSet(data.Dataset):
             for line in f:
                 video, _, label = line.strip().split()
                 video_path = os.path.join(self._data_root, video[:-4] + '.mp4')# 找到标签对应视频的真实路径
+                if not os.path.exists(video_path):
+                    print('Error: video %s not exists.' % video_path)
+                # print(video_path)
+                num_frames = get_num_frames(video_path)
+                if num_frames <= 0:
+                    print(f"Error:path={video_path}, num_frames={num_frames}")
                 self._video_list.append((
                     video_path,
                     int(label),
-                    get_num_frames(video_path))) # counting the number of frames in a video
+                    num_frames)) # counting the number of frames in a video
 
         print('%d videos loaded.' % len(self._video_list))
 
@@ -115,7 +121,8 @@ class CoviarDataSet(data.Dataset):
         # Compute the range of the segment.
         seg_begin, seg_end = get_seg_range(num_frames, self._num_segments, seg,
                                                  representation=self._representation)
-
+        if seg_end <= 1:
+            print(f"Error:seg={seg}")
         # Sample one frame from the segment.
         v_frame_idx = random.randint(seg_begin, seg_end - 1)
         return get_gop_pos(v_frame_idx, self._representation)

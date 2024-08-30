@@ -32,6 +32,8 @@ def main():
         num_class = 101
     elif args.data_name == 'hmdb51':
         num_class = 51
+    elif args.data_name == 'charades':
+        num_class = 157
     else:
         raise ValueError('Unknown dataset ' + args.data_name)  # 未知数据集
 
@@ -78,7 +80,7 @@ def main():
             is_train=False,
             accumulate=(not args.no_accumulation),
             ),
-        batch_size=args.batch_size, shuffle=False,
+        batch_size=args.batch_size//2, shuffle=False,
         num_workers=args.workers, pin_memory=True)  # 创建验证数据加载器
 
     model = torch.nn.DataParallel(model, device_ids=args.gpus).cuda()  # 使用多个GPU
@@ -191,8 +193,9 @@ def validate(val_loader, model, criterion):
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
         target = target.cuda(non_blocking=True)
-        input_var = torch.autograd.Variable(input, volatile=True)
-        target_var = torch.autograd.Variable(target, volatile=True)
+        with torch.no_grad():
+            input_var = torch.autograd.Variable(input)
+            target_var = torch.autograd.Variable(target)
 
         output = model(input_var)
         output = output.view((-1, args.num_segments) + output.size()[1:])

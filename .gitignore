@@ -18,3 +18,4 @@ data_loader/coviar.egg-info
 data_loader/dist
 test.ipynb
 *.pth.tar
+.vscode

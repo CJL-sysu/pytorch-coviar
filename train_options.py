@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(description="CoViAR")
 
 # 数据部分
 parser.add_argument(
-    "--data-name", type=str, choices=["ucf101", "hmdb51"], help="数据集名称。"
+    "--data-name", type=str, choices=["ucf101", "hmdb51", "charades"], help="数据集名称。"
 )  # 设置数据集名称的选项，可以是 'ucf101' 或 'hmdb51'。
 parser.add_argument(
     "--data-root", type=str, help="数据目录的根路径。"
