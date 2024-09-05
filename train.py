@@ -14,6 +14,8 @@ from model import Model
 from train_options import parser
 from transforms import GroupCenterCrop
 from transforms import GroupScale
+from torch.utils.tensorboard import SummaryWriter
+import os
 
 SAVE_FREQ = 40  # 保存频率
 PRINT_FREQ = 20  # 打印频率
@@ -24,6 +26,15 @@ def main():
     global best_prec1
     args = parser.parse_args()  # 解析命令行参数
 
+    global writer
+    if args.tensorboard is not None:
+        if not os.path.exists(args.tensorboard):
+            os.makedirs(args.tensorboard)
+        writer = SummaryWriter(args.tensorboard)
+    else:
+        writer = None
+    
+    
     print('Training arguments:')
     for k, v in vars(args).items():  # 打印所有训练参数
         print('\t{}: {}'.format(k, v))
@@ -181,6 +192,10 @@ def train(train_loader, model, criterion, optimizer, epoch, cur_lr):
                        top1=top1,
                        top5=top5,
                        lr=cur_lr)))  # 打印训练状态
+            if writer is not None:
+                writer.add_scalar('train loss', losses, epoch)
+                writer.add_scalar('train top1', top1, epoch)
+                writer.add_scalar('train top5', top5, epoch)
 
 def validate(val_loader, model, criterion):
     batch_time = AverageMeter()
@@ -222,6 +237,10 @@ def validate(val_loader, model, criterion):
                        loss=losses,
                        top1=top1,
                        top5=top5)))  # 打印验证状态
+            if writer is not None:
+                writer.add_scalar('test loss', losses, i)
+                writer.add_scalar('test top1', top1, i)
+                writer.add_scalar('test top5', top5, i)
 
     print(('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f} Loss {loss.avg:.5f}'
            .format(top1=top1, top5=top5, loss=losses)))  # 打印验证结果

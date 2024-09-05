@@ -75,3 +75,6 @@ parser.add_argument(
 parser.add_argument(
     "--weights",  type=str, default=None, help="权重路径"
 )
+parser.add_argument(
+    "--tensorboard", type=str, default="tensorboard", help="tensorboard路径"
+)

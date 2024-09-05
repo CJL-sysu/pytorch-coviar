@@ -19,3 +19,4 @@ data_loader/dist
 test.ipynb
 *.pth.tar
 .vscode
+tensorboard
