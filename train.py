@@ -21,9 +21,14 @@ SAVE_FREQ = 40  # 保存频率
 PRINT_FREQ = 20  # 打印频率
 best_prec1 = 0  # 最佳精度
 
+total_train_step = 0
+total_test_step = 0
+
 def main():
     global args
     global best_prec1
+    global total_train_step 
+    global total_test_step
     args = parser.parse_args()  # 解析命令行参数
 
     global writer
@@ -54,7 +59,10 @@ def main():
     if args.weights is not None:
         checkpoint = torch.load(args.weights) 
         print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
-
+        if 'total_train_step' in checkpoint:
+            total_train_step = checkpoint['total_train_step']
+        if total_test_step in checkpoint:
+            total_test_step = checkpoint['total_test_step']
         base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
         model.load_state_dict(base_dict) # 导入模型参数
     else:
@@ -136,11 +144,14 @@ def main():
                         'arch': args.arch,
                         'state_dict': model.state_dict(),
                         'best_prec1': best_prec1,
+                        'total_train_step': total_train_step,
+                        'total_test_step': total_test_step
                     },
                     is_best,
                     filename='checkpoint.pth.tar')  # 保存模型检查点
 
 def train(train_loader, model, criterion, optimizer, epoch, cur_lr):
+    global total_train_step
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -193,11 +204,13 @@ def train(train_loader, model, criterion, optimizer, epoch, cur_lr):
                        top5=top5,
                        lr=cur_lr)))  # 打印训练状态
             if writer is not None:
-                writer.add_scalar('train loss', losses, epoch)
-                writer.add_scalar('train top1', top1, epoch)
-                writer.add_scalar('train top5', top5, epoch)
+                writer.add_scalar('train loss', losses.val, total_train_step)
+                writer.add_scalar("train top1", top1.val, total_train_step)
+                writer.add_scalar("train top5", top5.val, total_train_step)
+                total_train_step += 1
 
 def validate(val_loader, model, criterion):
+    global total_test_step
     batch_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
@@ -238,9 +251,10 @@ def validate(val_loader, model, criterion):
                        top1=top1,
                        top5=top5)))  # 打印验证状态
             if writer is not None:
-                writer.add_scalar('test loss', losses, i)
-                writer.add_scalar('test top1', top1, i)
-                writer.add_scalar('test top5', top5, i)
+                writer.add_scalar('test loss', losses.val, total_test_step)
+                writer.add_scalar('test top1', top1.val, total_test_step)
+                writer.add_scalar('test top5', top5.val, total_test_step)
+                total_test_step += 1
 
     print(('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f} Loss {loss.avg:.5f}'
            .format(top1=top1, top5=top5, loss=losses)))  # 打印验证结果

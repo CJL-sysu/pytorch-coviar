@@ -71,6 +71,10 @@ returns the accumulated motion vectors of the 9th frame of the 4th GOP.
 
 ## Training
 
+运行之前检查环境变量`LD_LIBRARY_PATH`, 确保值为`/usr/local/ffmpeg/lib/`，否则会触发段错误
+
+`export LD_LIBRARY_PATH=/usr/local/ffmpeg/lib/`
+
 ### hmdb51
 
 #### resnet
