@@ -61,7 +61,7 @@ def main():
         print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
         if 'total_train_step' in checkpoint:
             total_train_step = checkpoint['total_train_step']
-        if total_test_step in checkpoint:
+        if 'total_test_step' in checkpoint:
             total_test_step = checkpoint['total_test_step']
         base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
         model.load_state_dict(base_dict) # 导入模型参数

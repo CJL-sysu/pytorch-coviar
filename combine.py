@@ -21,9 +21,9 @@ def main():
 
     args = parser.parse_args()
 
-    with np.load(args.iframe) as iframe:
-        with np.load(args.mv) as mv:
-            with np.load(args.res) as residual:
+    with np.load(args.iframe, allow_pickle=True) as iframe:
+        with np.load(args.mv, allow_pickle=True) as mv:
+            with np.load(args.res, allow_pickle=True) as residual:
                 n = len(mv['names'])
 
                 i_score = np.array([score[0][0] for score in iframe['scores']])
