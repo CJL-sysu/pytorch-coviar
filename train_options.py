@@ -78,3 +78,6 @@ parser.add_argument(
 parser.add_argument(
     "--tensorboard", type=str, default="tensorboard", help="tensorboard路径"
 )
+parser.add_argument(
+    "--dropout", type=float, default=0.35, help="dropout", help="add dropout into model, only swin-transformer is supported"
+)

@@ -68,7 +68,19 @@ def main():
     else:
         print('No pretrained model')
         # return
-    
+
+    # 加载dropout
+    if args.dropout is not None:
+        if 'swin' in args.arch:
+            for name, module in model.named_modules():
+                if isinstance(module, torch.nn.Dropout):
+                    module.p = args.dropout
+        elif 'resnet' in args.arch:
+            # see https://www.zhihu.com/question/325139089
+            print('WARNING: Dropout is not supported for resnet. No dropout is added')
+        else:
+            print('WARNING: Dropout is not supported for this model. No dropout is added')
+
     print(model)
 
     train_loader = torch.utils.data.DataLoader(
